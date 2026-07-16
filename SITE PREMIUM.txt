@@ -1,0 +1,482 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Premium Cars Maroc</title>
+  <style>
+    :root{
+      --bg:#050816;
+      --bg2:#0b1228;
+      --card:rgba(255,255,255,.08);
+      --cardBorder:rgba(255,255,255,.14);
+      --text:#e5eefc;
+      --muted:#9fb0d1;
+      --gold:#f4c95d;
+      --blue:#3b82f6;
+      --cyan:#22d3ee;
+      --green:#22c55e;
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Arial,Helvetica,sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(34,211,238,.10), transparent 28%),
+        radial-gradient(circle at top right, rgba(59,130,246,.12), transparent 30%),
+        linear-gradient(180deg,var(--bg),var(--bg2));
+      color:var(--text);
+    }
+    .topbar{
+      position:sticky;top:0;z-index:60;
+      display:flex;justify-content:space-between;align-items:center;
+      padding:16px 5%;
+      background:rgba(5,8,22,.72);
+      backdrop-filter:blur(14px);
+      border-bottom:1px solid rgba(255,255,255,.08);
+      flex-wrap:wrap;gap:12px;
+    }
+    .brand{font-size:1.5rem;font-weight:800;letter-spacing:.3px}
+    .brand span{
+      color:var(--gold);
+      text-shadow:0 0 18px rgba(244,201,93,.45);
+    }
+    .nav{display:flex;gap:18px;flex-wrap:wrap}
+    .nav a{
+      color:#fff;text-decoration:none;font-weight:600;
+      opacity:.92;
+    }
+    .hero{
+      position:relative;
+      min-height:560px;
+      display:flex;
+      align-items:center;
+      overflow:hidden;
+      padding:78px 5%;
+      background:#040816;
+    }
+    .hero-media{
+      position:absolute;inset:0;width:100%;height:100%;
+      object-fit:cover;z-index:0;
+      animation:heroZoom 18s ease-in-out infinite alternate;
+      transform:scale(1.04);
+      filter:saturate(1.1) contrast(1.02);
+    }
+    .hero-overlay{
+      position:absolute;inset:0;z-index:1;
+      background:
+        linear-gradient(rgba(3,8,24,.48), rgba(4,8,22,.78)),
+        radial-gradient(circle at 20% 25%, rgba(34,211,238,.18), transparent 30%),
+        radial-gradient(circle at 80% 25%, rgba(244,201,93,.15), transparent 28%);
+    }
+    .scanlines{
+      position:absolute;inset:0;z-index:1;
+      background:repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,.025) 0px,
+        rgba(255,255,255,.025) 1px,
+        transparent 2px,
+        transparent 6px
+      );
+      mix-blend-mode:soft-light;
+      pointer-events:none;
+    }
+    .hero-grid{
+      position:relative;z-index:2;
+      width:100%;max-width:1260px;margin:0 auto;
+      display:grid;grid-template-columns:1.08fr .92fr;gap:32px;align-items:center;
+    }
+    .hero h1{
+      margin:0 0 16px;
+      font-size:3.2rem;
+      line-height:1.02;
+      text-shadow:0 14px 40px rgba(0,0,0,.42);
+    }
+    .hero p{
+      max-width:700px;
+      font-size:1.06rem;
+      color:rgba(229,238,252,.92);
+    }
+    .hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:24px}
+    .btn{
+      display:inline-block;
+      padding:14px 20px;
+      border-radius:14px;
+      text-decoration:none;
+      font-weight:700;
+      border:1px solid transparent;
+      cursor:pointer;
+      transition:.25s ease;
+    }
+    .btn-primary{
+      background:linear-gradient(135deg,var(--gold),#ffe08a);
+      color:#111827;
+      box-shadow:0 10px 30px rgba(244,201,93,.28);
+    }
+    .btn-outline{
+      color:#fff;
+      border-color:rgba(255,255,255,.24);
+      background:rgba(255,255,255,.06);
+      backdrop-filter:blur(8px);
+    }
+    .btn:hover{transform:translateY(-2px)}
+    .panel,.car-card,.stat,.booking-card{
+      background:var(--card);
+      border:1px solid var(--cardBorder);
+      box-shadow:var(--shadow);
+      border-radius:var(--radius);
+      backdrop-filter:blur(12px);
+    }
+    .booking-card{
+      padding:24px;
+      position:relative;
+      overflow:hidden;
+    }
+    .booking-card::before{
+      content:"";
+      position:absolute;inset:-1px;
+      border-radius:inherit;
+      padding:1px;
+      background:linear-gradient(135deg, rgba(34,211,238,.55), rgba(244,201,93,.35), rgba(59,130,246,.42));
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite:xor;
+      mask-composite:exclude;
+      pointer-events:none;
+    }
+    .booking-card h2,.panel h3,.section-title h2{margin-top:0}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .full{grid-column:1/-1}
+    label{
+      display:block;
+      font-weight:700;
+      margin-bottom:6px;
+      color:#dbe7ff;
+    }
+    input,select,textarea{
+      width:100%;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.08);
+      color:#fff;
+      font-size:1rem;
+      outline:none;
+    }
+    input::placeholder, textarea::placeholder{color:#c0d0ec}
+    select option{color:#111827}
+    textarea{min-height:100px;resize:vertical}
+    .estimation{
+      margin-top:14px;
+      padding:14px;
+      border-radius:14px;
+      background:rgba(59,130,246,.16);
+      border:1px solid rgba(59,130,246,.22);
+      color:#dbeafe;
+      font-weight:700;
+    }
+    .container{max-width:1260px;margin:0 auto;padding:64px 5%}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:54px}
+    .stat{
+      padding:24px;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .stat::after{
+      content:"";
+      position:absolute;
+      inset:auto -20% -35% auto;
+      width:110px;height:110px;border-radius:50%;
+      background:radial-gradient(circle, rgba(34,211,238,.18), transparent 65%);
+    }
+    .stat strong{
+      display:block;
+      font-size:2rem;
+      color:var(--cyan);
+      margin-bottom:6px;
+      text-shadow:0 0 18px rgba(34,211,238,.25);
+    }
+    .section-title{text-align:center;margin-bottom:30px}
+    .section-title p{margin:0 auto;max-width:780px;color:var(--muted)}
+    .cars{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px}
+    .car-card{overflow:hidden}
+    .car-image{
+      height:220px;
+      background-size:cover;
+      background-position:center;
+      position:relative;
+    }
+    .car-image::after{
+      content:"";
+      position:absolute;inset:0;
+      background:linear-gradient(180deg, transparent 45%, rgba(5,8,22,.55) 100%);
+    }
+    .car-placeholder{
+      height:220px;
+      display:flex;align-items:center;justify-content:center;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(34,211,238,.18), transparent 30%),
+        linear-gradient(135deg, rgba(59,130,246,.22), rgba(255,255,255,.05));
+      color:#dbeafe;
+      font-weight:700;
+    }
+    .car-content{padding:20px}
+    .tag{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(244,201,93,.18);
+      color:#ffe59a;
+      font-size:.84rem;
+      font-weight:700;
+      margin-bottom:10px;
+      border:1px solid rgba(244,201,93,.18);
+    }
+    .price{
+      font-size:1.35rem;
+      font-weight:800;
+      color:#86efac;
+      margin:8px 0;
+    }
+    .availability{
+      font-weight:700;
+      color:#67e8f9;
+      font-size:.95rem;
+    }
+    .two-cols{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:55px}
+    .panel{padding:24px}
+    .panel ul{padding-left:20px;margin-bottom:0;color:#dce8ff}
+    .panel li{margin-bottom:10px}
+    .contact{
+      margin-top:55px;
+      padding:32px;
+      border-radius:24px;
+      text-align:center;
+      background:
+        linear-gradient(135deg, rgba(59,130,246,.18), rgba(34,211,238,.10)),
+        rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow:var(--shadow);
+    }
+    footer{
+      background:#040816;
+      color:#c9d8f6;
+      text-align:center;
+      padding:24px 20px;
+      margin-top:50px;
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+
+    @keyframes heroZoom {
+      0% { transform:scale(1.04) translateX(0); }
+      100% { transform:scale(1.10) translateX(-1.5%); }
+    }
+
+    @media (max-width:1000px){
+      .hero-grid,.stats,.two-cols{grid-template-columns:1fr}
+      .hero h1{font-size:2.3rem}
+      .hero{min-height:auto}
+    }
+    @media (max-width:700px){
+      .form-grid{grid-template-columns:1fr}
+      .topbar{justify-content:center}
+      .nav{justify-content:center}
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">Premium <span>Cars Maroc</span></div>
+    <div class="nav">
+      <a href="#flotte">Flotte</a>
+      <a href="#reservation">Réservation</a>
+      <a href="#documents">Documents</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+
+  <section class="hero">
+    <img class="hero-media" src="https://glean.saleschataws-apis.dell.com/api/v1/downloadchatfile/dffb7a241c984a8797aa6e3846b63499" alt="Bannière futuriste voiture Premium Cars Maroc" />
+    <div class="hero-overlay"></div>
+    <div class="scanlines"></div>
+
+    <div class="hero-grid">
+      <div>
+        <h1>Réservez l’élégance. Vivez la route du futur.</h1>
+        <p>Premium Cars Maroc transforme la location automobile en expérience visuelle haut de gamme, avec une ambiance néon, un design immersif et une réservation fluide pensée pour séduire vos clients.</p>
+        <div class="hero-actions">
+          <a href="#reservation" class="btn btn-primary">Réserver maintenant</a>
+          <a href="#flotte" class="btn btn-outline">Voir la flotte</a>
+        </div>
+      </div>
+
+      <div class="booking-card" id="reservation">
+        <h2>Pré-réservation</h2>
+        <form id="bookingForm">
+          <div class="form-grid">
+            <div><label for="name">Nom complet</label><input id="name" type="text" required /></div>
+            <div><label for="phone">Téléphone</label><input id="phone" type="tel" required /></div>
+            <div><label for="email">Email</label><input id="email" type="email" required /></div>
+            <div><label for="age">Âge</label><input id="age" type="number" min="21" required /></div>
+            <div class="full">
+              <label for="car">Véhicule</label>
+              <select id="car" required>
+                <option value="">Sélectionner</option>
+                <option value="350">Clio 5 - 350 MAD / jour</option>
+                <option value="500">Dacia Duster - 500 MAD / jour</option>
+                <option value="1200">Mercedes Classe C / E - 1200 MAD / jour</option>
+                <option value="650">Kia Tucson - 650 MAD / jour</option>
+              </select>
+            </div>
+            <div><label for="startDate">Date de départ</label><input id="startDate" type="date" required /></div>
+            <div><label for="endDate">Date de retour</label><input id="endDate" type="date" required /></div>
+            <div class="full"><label for="location">Lieu de prise en charge</label><input id="location" type="text" placeholder="Casablanca, Marrakech, Aéroport..." required /></div>
+            <div class="full"><label for="notes">Détails complémentaires</label><textarea id="notes" placeholder="Heure d’arrivée, siège bébé, livraison, conducteur additionnel..."></textarea></div>
+          </div>
+          <div class="estimation" id="estimate">Montant estimé : 0 MAD</div>
+          <button class="btn btn-primary" type="submit" style="width:100%;margin-top:14px;">Envoyer la demande</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <main class="container">
+    <section class="stats">
+      <div class="stat"><strong>18</strong>véhicules</div>
+      <div class="stat"><strong>4</strong>catégories</div>
+      <div class="stat"><strong>1 jour</strong>minimum</div>
+      <div class="stat"><strong>24/7</strong>assistance</div>
+    </section>
+
+    <section id="flotte">
+      <div class="section-title">
+        <h2>Notre flotte</h2>
+        <p>Le design global adopte maintenant un style futuriste premium, avec une bannière animée et une interface visuelle plus immersive.</p>
+      </div>
+
+      <div class="cars">
+        <div class="car-card">
+          <div class="car-image" style="background-image:url('https://wh-saleschat.dell.com/api/v1/downloadchatfile/7b8d6ab3eca34e24857d02ca97658ec6');"></div>
+          <div class="car-content">
+            <span class="tag">5 disponibles</span>
+            <h3>Renault Clio 5</h3>
+            <p>Citadine économique, idéale pour les trajets urbains et les locations courtes ou moyennes durées.</p>
+            <div class="price">350 MAD / jour</div>
+            <div class="availability">Disponibilité : élevée</div>
+          </div>
+        </div>
+
+        <div class="car-card">
+          <div class="car-placeholder">Image à intégrer</div>
+          <div class="car-content">
+            <span class="tag">8 disponibles</span>
+            <h3>Dacia Duster</h3>
+            <p>SUV polyvalent, adapté aux familles et aux longs trajets.</p>
+            <div class="price">500 MAD / jour</div>
+            <div class="availability">Disponibilité : élevée</div>
+          </div>
+        </div>
+
+        <div class="car-card">
+          <div class="car-placeholder">Image à intégrer</div>
+          <div class="car-content">
+            <span class="tag">2 disponibles</span>
+            <h3>Mercedes Classe C / E</h3>
+            <p>Berline premium pour déplacements haut de gamme et clientèle affaires.</p>
+            <div class="price">1200 MAD / jour</div>
+            <div class="availability">Disponibilité : limitée</div>
+          </div>
+        </div>
+
+        <div class="car-card">
+          <div class="car-placeholder">Image à intégrer</div>
+          <div class="car-content">
+            <span class="tag">3 disponibles</span>
+            <h3>Kia Tucson</h3>
+            <p>SUV moderne, spacieux et confortable pour les séjours touristiques.</p>
+            <div class="price">650 MAD / jour</div>
+            <div class="availability">Disponibilité : moyenne</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="two-cols" id="documents">
+      <div class="panel">
+        <h3>Documents à fournir</h3>
+        <ul>
+          <li>Carte d’identité nationale ou passeport</li>
+          <li>Permis de conduire valide</li>
+          <li>Moyen de paiement valide</li>
+          <li>Dépôt de garantie selon le véhicule</li>
+        </ul>
+      </div>
+
+      <div class="panel">
+        <h3>Instructions indispensables</h3>
+        <ul>
+          <li>Vérifier l’état du véhicule avant départ</li>
+          <li>Respecter le code de la route</li>
+          <li>Informer l’agence en cas d’accident ou de panne</li>
+          <li>Restituer le véhicule à l’heure convenue</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <h2>Contact rapide</h2>
+      <p>Téléphone : +212 6 00 00 00 00<br />Email : contact@premiumcars.ma<br />WhatsApp : +212 6 00 00 00 00</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 Premium Cars Maroc</p>
+  </footer>
+
+  <script>
+    const car = document.getElementById('car');
+    const startDate = document.getElementById('startDate');
+    const endDate = document.getElementById('endDate');
+    const estimate = document.getElementById('estimate');
+    const bookingForm = document.getElementById('bookingForm');
+
+    function getDays() {
+      const start = new Date(startDate.value);
+      const end = new Date(endDate.value);
+      const diff = end - start;
+      const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+      return days > 0 ? days : 0;
+    }
+
+    function updateEstimate() {
+      const rate = Number(car.value || 0);
+      const days = getDays();
+      const total = rate * days;
+      estimate.textContent = days > 0 && rate > 0
+        ? `Montant estimé : ${total} MAD pour ${days} jour(s)`
+        : 'Montant estimé : 0 MAD';
+    }
+
+    car.addEventListener('change', updateEstimate);
+    startDate.addEventListener('change', updateEstimate);
+    endDate.addEventListener('change', updateEstimate);
+
+    bookingForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      if(getDays() <= 0){
+        alert('Veuillez choisir une date valide.');
+        return;
+      }
+      alert('Votre demande a été envoyée.');
+      bookingForm.reset();
+      estimate.textContent = 'Montant estimé : 0 MAD';
+    });
+  </script>
+</body>
+</html>
